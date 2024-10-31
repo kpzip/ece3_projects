@@ -1,9 +1,9 @@
 from manim import *
 import math
 
-min_x = -4 * PI
-max_x = 4 * PI
-x_step = PI / 2
+min_x = -3
+max_x = 3
+x_step = 0.5
 sin_waves_text_color = YELLOW
 
 class SineWaves(Scene):
@@ -15,15 +15,17 @@ class SineWaves(Scene):
         a_fadein_text = MathTex("a")
         a_fadein_text[0][:1].set_color(RED)
         a_fadein_group = VGroup(a_fadein_text).arrange_submobjects().scale(0.5).shift(4 * RIGHT + 1 * DOWN).shift(DOWN)
-        sin_func_text = MathTex(r"f(x)=\sin(", r"", r"x)")
-        sin_func_text_with_a = MathTex(r"f(x)=\sin(", r"a", r"x)").scale(0.5).shift(4 * RIGHT + 1 * DOWN)
+        sin_func_text = MathTex(r"f(x)=\sin(", r"2\pi", r"", r"x)")
+        sin_func_text_with_a = MathTex(r"f(x)=\sin(", r"2\pi", r"a", r"x)").scale(0.5).shift(4 * RIGHT + 1 * DOWN)
 
         sin_func_text[0][:4].set_color(BLUE)
-        sin_func_text[1][:1].set_color(BLUE)
+        sin_func_text[1][:2].set_color(YELLOW)
+        sin_func_text[2][:1].set_color(BLUE)
 
         sin_func_text_with_a[0][:4].set_color(BLUE)
-        sin_func_text_with_a[1][:1].set_color(RED)
-        sin_func_text_with_a[2][:1].set_color(BLUE)
+        sin_func_text_with_a[1][:2].set_color(YELLOW)
+        sin_func_text_with_a[2][:1].set_color(RED)
+        sin_func_text_with_a[3][:1].set_color(BLUE)
         
         a = ValueTracker(1)
 
@@ -32,9 +34,9 @@ class SineWaves(Scene):
         a_value = always_redraw(lambda: Text(f"a = {a.get_value():.2f}", color=RED).scale(0.5).shift(4 * RIGHT + 2 * DOWN))
 
         vt = ValueTracker(min_x)
-        axes = Axes(x_range=[min_x, max_x, x_step], y_range=[-1.2, 1.2, 1]).scale(0.7).shift(1.6 * UP)
+        axes = Axes(x_range=[min_x, max_x, x_step], y_range=[-1.2, 1.2, 1], x_length=15, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(min_x, max_x, 1)}).scale(0.7).shift(1.6 * UP)
 
-        sin_wave = always_redraw(lambda: axes.plot(lambda x: math.sin(a.get_value() * x), color=BLUE, x_range=[min_x, vt.get_value()]))
+        sin_wave = always_redraw(lambda: axes.plot(lambda x: math.sin(2 * PI * a.get_value() * x), color=BLUE, x_range=[min_x, vt.get_value()]))
         sin_dot = always_redraw(lambda: Dot(point=axes.c2p(vt.get_value(), sin_wave.underlying_function(vt.get_value())), color=BLUE))
         
         fourier_transform = MathTex(r"\hat{f} (\xi)=\int_{-\infty}^{\infty}f(x)e^{-2\pi ix\xi}dx").scale(0.5).shift(4 * RIGHT + 1.5 * DOWN)
