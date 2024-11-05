@@ -18,7 +18,7 @@ b = -1
 c = 5
 
 def quadratic(x):
-    return a * x * x + b * x + c
+    return a * (x ** 2) + b * x + c
 
 def main():
     x_vals = [random.uniform(min_x, max_x) for _ in range(num_points)]
