@@ -31,17 +31,27 @@ class FourierTransforms(Scene):
         initial_wave_draw = always_redraw(lambda: time_domain.plot(wave1_func, color=PURPLE, x_range=[time_domain.x_range[0], initial_wave_draw_tracker.get_value()]))
         initial_wave_draw_dot = always_redraw(lambda: Dot(point=time_domain.c2p(initial_wave_draw_tracker.get_value(), initial_wave_draw.underlying_function(initial_wave_draw_tracker.get_value())), color=PURPLE))
         wave1 = time_domain.plot(wave1_func, color=PURPLE)
+        wave1_eq = MathTex(r"f(x)", r"=", r"\frac{1}{3}", r"\sin(", r"1", r"\cdot2\pi x)", r"+", r"\frac{2}{3}", r"\sin(", r"\frac{4}{3}", r"\cdot2\pi x)").scale(0.6).shift(0.3 * UP + 2 * LEFT)
+        wave1_eq[0][:].set_color(PURPLE)
+        wave1_eq[2][:].set_color(RED)
+        wave1_eq[3][:].set_color(RED)
+        wave1_eq[4][:].set_color(RED)
+        wave1_eq[5][:].set_color(RED)
+        wave1_eq[7][:].set_color(BLUE)
+        wave1_eq[8][:].set_color(BLUE)
+        wave1_eq[9][:].set_color(BLUE)
+        wave1_eq[10][:].set_color(BLUE)
 
         components_tracker = ValueTracker(0)
         wave1_comp1 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp1(x) + components_tracker.get_value(), color=RED))
         wave1_comp2 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp2(x) - components_tracker.get_value(), color=BLUE))
 
-        frequency_domain = Axes(x_range=[time_min_x, time_max_x, 0.5], y_range=[-0.65, 0.65, 0.5], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(freq_min_x, freq_max_x, 1)}).scale(0.4).shift(-2 * UP)
+        frequency_domain = Axes(x_range=[time_min_x, time_max_x, 0.5], y_range=[-0.72, 0.72, 0.5], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(freq_min_x, freq_max_x, 1)}).scale(0.4).shift(-2 * UP)
         frequency_domain_title = MathTex(r"\text{``Frequency Domain''}", color=YELLOW).shift(0.5 * DOWN)
         frequency_domain_labels = frequency_domain.get_axis_labels(x_label=MathTex(r"\text{Frequency}").scale(0.5), y_label=MathTex(r"\text{Contributing Factor}").scale(0.5))
 
-        N = 600
-        T = freq_max_x / 600.0
+        N = 1200
+        T = freq_max_x / N
         linspace = np.linspace(0.0, N * T, N, endpoint=False)
         yf = sp.fft.fft(wave1_func(linspace))
         xf = sp.fft.fftfreq(N, T)[:N // 2]
@@ -63,18 +73,30 @@ class FourierTransforms(Scene):
         # Time Space
         self.play(Write(time_domain))
         self.wait(0.5)
+        self.play(Write(time_domain_title), Write(time_domain_labels[1]), Write(time_domain_labels[0]))
+        self.wait(1)
+        self.play(Wiggle(time_domain_labels[1]))
+        self.wait(0.6)
+        self.play(Wiggle(time_domain_labels[0]))
+        self.wait(1)
+
+        # Frequency Space
+        self.play(Write(frequency_domain))
+        self.wait(0.5)
+        self.play(Write(frequency_domain_title), Write(frequency_domain_labels[1]), Write(frequency_domain_labels[0]))
+        self.wait(1)
+        self.play(Wiggle(frequency_domain_labels[1]))
+        self.wait(0.6)
+        self.play(Wiggle(frequency_domain_labels[0]))
+        self.wait(1)
+
+        # Wave1 and components
         self.add(initial_wave_draw, initial_wave_draw_dot)
         self.play(initial_wave_draw_tracker.animate.set_value(time_domain.x_range[1]))
         self.play(FadeOut(initial_wave_draw_dot))
         self.remove(initial_wave_draw)
         self.add(wave1)
-        self.wait(0.5)
-        self.play(Write(time_domain_title))
-        self.wait(1)
-        self.play(Write(time_domain_labels[1]))
-        self.play(Write(time_domain_labels[0]))
-        self.wait(1)
-
+        self.wait(1.5)
         # Components
         wave1_copy1 = wave1.copy()
         wave1_copy2 = wave1.copy()
@@ -92,20 +114,27 @@ class FourierTransforms(Scene):
         self.add(wave1)
         self.wait(0.5)
 
-        # Frequency Space
-        self.play(Write(frequency_domain))
-        self.wait(0.5)
+        # ft
         self.add(initial_ft_draw, initial_ft_draw_dot)
         self.play(initial_ft_draw_tracker.animate.set_value(time_domain.x_range[1]))
         self.play(FadeOut(initial_ft_draw_dot))
         self.remove(initial_ft_draw)
         self.add(ft1)
+        self.wait(1.5)
+
+        # ft1 explanation
+        self.play(Write(wave1_eq))
+        lines1 = frequency_domain.get_lines_to_point(frequency_domain.c2p(1.0, 0.35))
+        lines2 = frequency_domain.get_lines_to_point(frequency_domain.c2p(1.29, 0.51))
         self.wait(0.5)
-        self.play(Write(frequency_domain_title))
-        self.wait(1)
-        self.play(Write(frequency_domain_labels[1]))
-        self.play(Write(frequency_domain_labels[0]))
-        self.wait(1)
+        self.play(Write(lines1))
+        self.wait(0.5)
+        self.play(Write(lines2))
+        self.wait(0.5)
+        self.play(Wiggle(wave1_eq[4]))
+        self.play(Wiggle(wave1_eq[2]))
+        self.play(Wiggle(wave1_eq[9]))
+        self.play(Wiggle(wave1_eq[7]))
 
         # End Pause
         self.wait(2)
