@@ -23,12 +23,9 @@ class SineWaves(Scene):
         multiple_sin_funcs[6][:].set_color(BLUE)
         multiple_sin_funcs[12][:].set_color(BLUE)
         multiple_sin_funcs[18][:].set_color(BLUE)
-        multiple_sin_funcs[2][:].set_color(RED)
-        multiple_sin_funcs[5][:].set_color(RED)
-        multiple_sin_funcs[8][:].set_color(RED)
-        multiple_sin_funcs[11][:].set_color(RED)
-        multiple_sin_funcs[14][:].set_color(RED)
-        multiple_sin_funcs[17][:].set_color(RED)
+        multiple_sin_funcs_constants = [multiple_sin_funcs[2], multiple_sin_funcs[5], multiple_sin_funcs[8], multiple_sin_funcs[11], multiple_sin_funcs[14], multiple_sin_funcs[17]]
+        for c in multiple_sin_funcs_constants:
+            c[:].set_color(RED)
         multiple_sin_funcs[4][:].set_color(YELLOW)
         multiple_sin_funcs[10][:].set_color(YELLOW)
         multiple_sin_funcs[16][:].set_color(YELLOW)
@@ -157,6 +154,8 @@ class SineWaves(Scene):
         self.play(Transform(sin_wave, square_approx, replace_mobject_with_target_in_scene=True))
         self.play(TransformMatchingTex(f_value_unknown, f_alpha_value_unknown, transform_mismatches=True))
         self.wait(0.5)
+        self.play([Wiggle(c, scale_value=1.5) for c in multiple_sin_funcs_constants])
+        self.wait(0.5)
 
         # is it possible?
         is_it_possible = MathTex(r"\text{Is it possible to find }", r"f_{i}", r"\text{ and }", r"\alpha_{i}", r"\text{ from the graph?}").scale(0.75).center().shift(3 * UP)
@@ -164,23 +163,27 @@ class SineWaves(Scene):
         is_it_possible[3][:].set_color(RED)
         even_better = MathTex(r"\text{Even better yet, can we find a function }", r"\hat{g}(\xi)", r"\text{ such that}").scale(0.75).move_to(is_it_possible).shift(0.75 * DOWN)
         even_better[1][:].set_color(BLUE)
-        kinda_fourier_func = MathTex(r"\hat{f}(", r"\xi", r")", r"=", r"\alpha_{i}").scale(0.75).move_to(even_better).shift(0.75 * DOWN)
+        kinda_fourier_func = MathTex(r"\hat{g}(", r"\xi_{i}", r")", r"=", r"\alpha_{i}").scale(0.75).move_to(even_better).shift(0.75 * DOWN)
         kinda_fourier_func[0][:].set_color(BLUE)
         kinda_fourier_func[2][:].set_color(BLUE)
         kinda_fourier_func[1][:].set_color(BLUE)
         kinda_fourier_func[4][:].set_color(RED)
-        where = MathTex(r"\text{where }", r"\xi", r"\text{ is some frequency and }", r"\alpha_{i}", r"\text{ is that frequencies ``intensity''?}").scale(0.75).move_to(kinda_fourier_func).shift(0.75 * DOWN)
+        where = MathTex(r"\text{where }", r"\xi_{i}", r"\text{ is some frequency and }", r"\alpha_{i}", r"\text{ is that frequencies ``intensity''?}").scale(0.75).move_to(kinda_fourier_func).shift(0.75 * DOWN)
         where[1][:].set_color(BLUE)
         where[3][:].set_color(RED)
         final_group = Group(axes, multiple_sin_funcs, f_alpha_value_unknown, square_approx)
         self.play(f_alpha_value_unknown.animate.shift(UP), multiple_sin_funcs.animate.shift(6.5 * LEFT))
         self.play(final_group.animate.scale(0.75).shift(3 * DOWN))
         self.play(Write(is_it_possible))
+        self.wait(1.5)
         self.play(Write(even_better))
         self.play(Write(kinda_fourier_func))
         self.play(Write(where))
         self.wait(1)
-        self.play(Unwrite(is_it_possible, run_time=0.75), Unwrite(even_better, run_time=0.75), Unwrite(kinda_fourier_func, run_time=0.75), Unwrite(where, run_time=0.75))
+        self.play(Unwrite(is_it_possible, run_time=1))
+        self.play(Unwrite(even_better, run_time=1))
+        self.play(Unwrite(kinda_fourier_func, run_time=1))
+        self.play(Unwrite(where, run_time=1))
 
         # fourier transformation debut
         yes = MathTex(r"\text{Yes!}").scale(0.75).shift(3 * UP)
@@ -190,7 +193,7 @@ class SineWaves(Scene):
 
         # self.add(index_labels(fourier_transform[0]))
         # self.play(Write(fourier_transform))
-        self.wait(2)
+        self.wait(4)
 
         # disappear
         self.play(Unwrite(fourier_transform, run_time=0.75), Unwrite(yes, run_time=0.75), Unwrite(axes, run_time=0.75), Unwrite(multiple_sin_funcs, run_time=0.75), Unwrite(f_alpha_value_unknown, run_time=0.75), FadeOut(square_approx, run_time=0.25))
