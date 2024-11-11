@@ -44,6 +44,9 @@ class FourierTransforms(Scene):
         wave1_eq[9][:].set_color(BLUE)
         wave1_eq[10][:].set_color(BLUE)
 
+        wave2_approx_amount = 8
+        wave2 = always_redraw(lambda: time_domain.plot(lib.square_wave_fourier(wave2_approx_amount), color=BLUE))
+
         components_tracker = ValueTracker(0)
         wave1_comp1 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp1(x) + components_tracker.get_value(), color=RED))
         wave1_comp2 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp2(x) - components_tracker.get_value(), color=BLUE))
@@ -52,17 +55,15 @@ class FourierTransforms(Scene):
         frequency_domain_title = MathTex(r"\text{``Frequency Domain''}", color=YELLOW).shift(0.5 * DOWN)
         frequency_domain_labels = frequency_domain.get_axis_labels(x_label=MathTex(r"\text{Frequency}").scale(0.5), y_label=MathTex(r"\text{Contributing Factor}").scale(0.5))
 
-        N = 1200
-        T = freq_max_x / N
-        linspace = np.linspace(0.0, N * T, N, endpoint=False)
-        yf = sp.fft.fft(wave1_func(linspace))
-        xf = sp.fft.fftfreq(N, T)[:N // 2]
-        ft1_func = sp.interpolate.interp1d(xf, 2.0/N * np.abs(yf[0:N//2]), bounds_error=False, fill_value="extrapolate")
+        ft1_func = lib.fft_func(wave1_func, freq_max_x)
+        real_ft1_func = lib.analytical_fft([0.333, 0.667], [1, 1.33])
 
         # initial_ft_draw_tracker = ValueTracker(0)
         # initial_ft_draw = always_redraw(lambda: frequency_domain.plot(ft1_func, color=PURPLE, x_range=[time_domain.x_range[0], initial_ft_draw_tracker.get_value()]))
         # initial_ft_draw_dot = always_redraw(lambda: Dot(point=frequency_domain.c2p(initial_ft_draw_tracker.get_value(), initial_ft_draw.underlying_function(initial_ft_draw_tracker.get_value())), color=PURPLE))
         ft1 = frequency_domain.plot(ft1_func, color=PURPLE)
+        real_ft1 = frequency_domain.plot(real_ft1_func, color=PURPLE, x_range=frequency_domain.x_range[:2] + [0.0001], use_smoothing=False)
+        ft2 = always_redraw(lambda: frequency_domain.plot(lib.fft_func(wave2.underlying_function(), freq_max_x), color=BLUE))
 
         # Animation
 
@@ -177,13 +178,28 @@ class FourierTransforms(Scene):
         # fft approximation versus real ft
         approx_arrow_pointing_to = frequency_domain.c2p(1.5, 0.25)
         approx_arrow = Arrow(start=approx_arrow_pointing_to + np.array([1.5, 0.5, 0]), end=approx_arrow_pointing_to)
-        fft = MathTex(r"\text{``FFT''}").scale(0.6).shift(4 * DOWN)
-        real = MathTex(r"\text{Real Fourier Transform}").scale(0.6).move_to(fft)
+        fft = MathTex(r"\text{``FFT''}").scale(0.6).shift(2 * DOWN + 1 * LEFT)
+        real = MathTex(r"\text{Real Fourier Transform}", r"").scale(0.6).shift(2 * DOWN)
+        real_asterix = MathTex(r"\text{Real Fourier Transform}", r"\text{*}").scale(0.6).shift(2 * DOWN)
         self.play(Write(approx_arrow), Write(fft))
-        self.wait(2)
-        self.play(Transform(fft, real))
-        self.remove(fft)
-        self.add(real)
+        self.wait(4)
+        self.play(Transform(fft, real), Transform(ft1, real_ft1))
+        self.remove(fft, ft1)
+        self.add(real, real_ft1)
+        rft_point1 = Dot(point=frequency_domain.c2p(1, 0.333), color=PURPLE)
+        rft_point2 = Dot(point=frequency_domain.c2p(1.33, 0.667), color=PURPLE)
+        rft_point1_tex = MathTex(r"(1, \frac{1}{3})", color=PURPLE).scale(0.5).move_to(rft_point1).shift(0.5 * LEFT)
+        rft_point2_tex = MathTex(r"(\frac{4}{3}, \frac{2}{3})", color=PURPLE).scale(0.5).move_to(rft_point2).shift(0.5 * RIGHT + 0.1 * DOWN)
+        self.play(Write(rft_point1), Write(rft_point1_tex))
+        self.play(Write(rft_point2), Write(rft_point2_tex))
+        self.wait(1)
+        self.play(TransformMatchingTex(real, real_asterix, fade_transform_mismatches=True))
+        self.remove(real)
+        self.add(real_asterix)
+        asterix_text = MathTex(r"\text{*in reality the the spikes are delta functions and their integrals are the amplitudes.}").scale(0.4).shift(3.7 * DOWN)
+        self.play(Write(asterix_text), run_time=1.5)
+        self.wait(1.5)
+        self.play(Unwrite(rft_point1), Unwrite(rft_point2), Unwrite(rft_point1_tex), Unwrite(rft_point2_tex), Unwrite(real_asterix), Unwrite(approx_arrow), Unwrite(asterix_text))
 
         # End Pause
         self.wait(2)
