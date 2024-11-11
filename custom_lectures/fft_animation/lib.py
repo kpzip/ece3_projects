@@ -6,8 +6,8 @@ import numpy as np
 import scipy as sp
 
 
-def square_wave_fourier(n: int) -> Callable[[float], float]:
-    return lambda x: sum([(4 / ((2 * n2 + 1) * np.pi)) * math.sin((2 * n2 + 1) * np.pi * x) for n2 in range(n)])
+def square_wave_fourier(n: int) -> Callable[[float | np.ndarray[float]], float | np.ndarray[float]]:
+    return lambda x: sum([(4 / ((2 * n2 + 1) * np.pi)) * np.sin((2 * n2 + 1) * np.pi * x) for n2 in range(n)])
 
 
 def normalized_sin(x: float) -> float:
