@@ -63,7 +63,7 @@ class FourierTransforms(Scene):
         # initial_ft_draw_dot = always_redraw(lambda: Dot(point=frequency_domain.c2p(initial_ft_draw_tracker.get_value(), initial_ft_draw.underlying_function(initial_ft_draw_tracker.get_value())), color=PURPLE))
         ft1 = frequency_domain.plot(ft1_func, color=PURPLE)
         real_ft1 = frequency_domain.plot(real_ft1_func, color=PURPLE, x_range=frequency_domain.x_range[:2] + [0.0001], use_smoothing=False)
-        ft2 = always_redraw(lambda: frequency_domain.plot(lib.fft_func(wave2.underlying_function(), freq_max_x), color=BLUE))
+        ft2 = always_redraw(lambda: frequency_domain.plot(lib.fft_func(wave2.underlying_function, freq_max_x), color=BLUE))
 
         # Animation
 
