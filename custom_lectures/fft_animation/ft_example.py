@@ -20,6 +20,8 @@ class FourierTransforms(Scene):
     def construct(self):
         ft_intro_text = Text("Fourier Transforms", gradient=(BLUE, DARK_BROWN)).scale(2)
 
+        ft_eq = MathTex(r"\hat{f}(\xi)=\int_{-\infty}^{\infty}f(x)e^{-2\pi ix\xi}dx", color=PURPLE).scale(0.6).shift(1.5 * DOWN)
+
         time_domain = Axes(x_range=[time_min_x, time_max_x, 0.5], y_range=[-1.3, 1.3, 1], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(time_min_x, time_max_x, 1)}).scale(0.4).shift(2 * UP)
         time_domain_title = MathTex(r"\text{``Time Domain''}", color=YELLOW).shift(3.5 * UP)
         time_domain_labels = time_domain.get_axis_labels(x_label=MathTex(r"\text{Time}").scale(0.5), y_label=MathTex(r"\text{Intensity}").scale(0.5))
@@ -46,7 +48,7 @@ class FourierTransforms(Scene):
         wave1_comp1 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp1(x) + components_tracker.get_value(), color=RED))
         wave1_comp2 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp2(x) - components_tracker.get_value(), color=BLUE))
 
-        frequency_domain = Axes(x_range=[time_min_x, time_max_x, 0.5], y_range=[-0.72, 0.72, 0.5], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(freq_min_x, freq_max_x, 1)}).scale(0.4).shift(-2 * UP)
+        frequency_domain = Axes(x_range=[time_min_x, time_max_x, 0.5], y_range=[0, 0.72, 0.5], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(freq_min_x, freq_max_x, 1)}).scale(0.4).shift(-2 * UP)
         frequency_domain_title = MathTex(r"\text{``Frequency Domain''}", color=YELLOW).shift(0.5 * DOWN)
         frequency_domain_labels = frequency_domain.get_axis_labels(x_label=MathTex(r"\text{Frequency}").scale(0.5), y_label=MathTex(r"\text{Contributing Factor}").scale(0.5))
 
@@ -57,9 +59,9 @@ class FourierTransforms(Scene):
         xf = sp.fft.fftfreq(N, T)[:N // 2]
         ft1_func = sp.interpolate.interp1d(xf, 2.0/N * np.abs(yf[0:N//2]), bounds_error=False, fill_value="extrapolate")
 
-        initial_ft_draw_tracker = ValueTracker(0)
-        initial_ft_draw = always_redraw(lambda: frequency_domain.plot(ft1_func, color=PURPLE, x_range=[time_domain.x_range[0], initial_ft_draw_tracker.get_value()]))
-        initial_ft_draw_dot = always_redraw(lambda: Dot(point=frequency_domain.c2p(initial_ft_draw_tracker.get_value(), initial_ft_draw.underlying_function(initial_ft_draw_tracker.get_value())), color=PURPLE))
+        # initial_ft_draw_tracker = ValueTracker(0)
+        # initial_ft_draw = always_redraw(lambda: frequency_domain.plot(ft1_func, color=PURPLE, x_range=[time_domain.x_range[0], initial_ft_draw_tracker.get_value()]))
+        # initial_ft_draw_dot = always_redraw(lambda: Dot(point=frequency_domain.c2p(initial_ft_draw_tracker.get_value(), initial_ft_draw.underlying_function(initial_ft_draw_tracker.get_value())), color=PURPLE))
         ft1 = frequency_domain.plot(ft1_func, color=PURPLE)
 
         # Animation
@@ -114,27 +116,66 @@ class FourierTransforms(Scene):
         self.add(wave1)
         self.wait(0.5)
 
-        # ft
-        self.add(initial_ft_draw, initial_ft_draw_dot)
-        self.play(initial_ft_draw_tracker.animate.set_value(time_domain.x_range[1]))
-        self.play(FadeOut(initial_ft_draw_dot))
-        self.remove(initial_ft_draw)
+        # constructive interference
+        c_arrow_1_pointing_to = time_domain.c2p(5.35, 0.80)
+        c_arrow_1 = Arrow(start=c_arrow_1_pointing_to + np.array([1.8, 0.5, 0]), end=c_arrow_1_pointing_to)
+        c_arrow_2_pointing_to = time_domain.c2p(6.2, 0.95)
+        c_arrow_2 = Arrow(start=c_arrow_2_pointing_to + np.array([1.4, 0.4, 0]), end=c_arrow_2_pointing_to)
+        constructive_arrows = VGroup(c_arrow_1, c_arrow_2)
+        constructive_text = MathTex(r"\text{``constructive interference''}").scale(0.4).shift(3.5 * UP + 4.5 * RIGHT)
+        self.play(Write(constructive_arrows))
+        self.play(Write(constructive_text))
+        self.wait(1.5)
+
+        # destructive interference
+        d_arrow_1_pointing_to = time_domain.c2p(4.5, 0.25)
+        d_arrow_1 = Arrow(start=d_arrow_1_pointing_to + np.array([0.5, -1.5, 0]), end=d_arrow_1_pointing_to)
+        d_arrow_2_pointing_to = time_domain.c2p(5.2, 0.25)
+        d_arrow_2 = Arrow(start=d_arrow_2_pointing_to + np.array([0.3, -1.5, 0]), end=d_arrow_2_pointing_to)
+        destructive_arrows = VGroup(d_arrow_1, d_arrow_2)
+        destructive_text = MathTex(r"\text{``destructive interference''}").scale(0.4).shift(2.5 * RIGHT + 0.7 * UP)
+        self.play(Write(destructive_arrows))
+        self.play(Write(destructive_text))
+        self.wait(1.5)
+        self.play(Unwrite(constructive_arrows), Unwrite(constructive_text))
+        self.play(Unwrite(destructive_arrows), Unwrite(destructive_text))
+
+        # fft
+        wave1_copy4 = wave1.copy()
+        self.play(Transform(wave1_copy4, ft_eq), run_time=2)
+        self.remove(wave1_copy4)
+        self.add(ft_eq)
+        self.wait(1)
+        self.play(Transform(ft_eq, ft1), run_time=2)
+        self.remove(ft_eq)
+        # self.add(initial_ft_draw, initial_ft_draw_dot)
+        # self.play(initial_ft_draw_tracker.animate.set_value(time_domain.x_range[1]))
+        # self.play(FadeOut(initial_ft_draw_dot))
+        # self.remove(initial_ft_draw)
         self.add(ft1)
         self.wait(1.5)
 
         # ft1 explanation
-        self.play(Write(wave1_eq))
         lines1 = frequency_domain.get_lines_to_point(frequency_domain.c2p(1.0, 0.35))
         lines2 = frequency_domain.get_lines_to_point(frequency_domain.c2p(1.29, 0.51))
         self.wait(0.5)
         self.play(Write(lines1))
         self.wait(0.5)
         self.play(Write(lines2))
-        self.wait(0.5)
-        self.play(Wiggle(wave1_eq[4]))
-        self.play(Wiggle(wave1_eq[2]))
-        self.play(Wiggle(wave1_eq[9]))
-        self.play(Wiggle(wave1_eq[7]))
+        self.wait(2)
+        wave1_copy4 = wave1.copy()
+        self.play(Transform(wave1_copy4, wave1_eq))
+        self.remove(wave1_copy4)
+        self.add(wave1_eq)
+        self.play(Wiggle(wave1_eq[4], scale_value=2.5), Wiggle(lines1[0], scale_value=1.5))
+        self.play(Wiggle(wave1_eq[2], scale_value=1.5), Wiggle(lines1[1], scale_value=1.5))
+        self.play(Wiggle(wave1_eq[9], scale_value=1.5), Wiggle(lines2[0], scale_value=1.5))
+        self.play(Wiggle(wave1_eq[7], scale_value=1.5), Wiggle(lines2[1], scale_value=1.5))
+        self.wait(2)
+        self.play(Unwrite(lines1), Unwrite(lines2))
+
+        # fft approximation versus real ft
+        
 
         # End Pause
         self.wait(2)
