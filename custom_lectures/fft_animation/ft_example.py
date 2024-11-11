@@ -183,8 +183,11 @@ class FourierTransforms(Scene):
         real_asterix = MathTex(r"\text{Real Fourier Transform}", r"\text{*}").scale(0.6).shift(2 * DOWN)
         self.play(Write(approx_arrow), Write(fft))
         self.wait(4)
-        self.play(Transform(fft, real), Transform(ft1, real_ft1))
-        self.remove(fft, ft1)
+        ft1_c1 = ft1.copy()
+        self.remove(ft1)
+        self.add(ft1_c1)
+        self.play(Transform(fft, real), Transform(ft1_c1, real_ft1))
+        self.remove(fft, ft1_c1)
         self.add(real, real_ft1)
         rft_point1 = Dot(point=frequency_domain.c2p(1, 0.333), color=PURPLE)
         rft_point2 = Dot(point=frequency_domain.c2p(1.33, 0.667), color=PURPLE)
@@ -200,6 +203,18 @@ class FourierTransforms(Scene):
         self.play(Write(asterix_text), run_time=1.5)
         self.wait(1.5)
         self.play(Unwrite(rft_point1), Unwrite(rft_point2), Unwrite(rft_point1_tex), Unwrite(rft_point2_tex), Unwrite(real_asterix), Unwrite(approx_arrow), Unwrite(asterix_text))
+        self.play(Transform(real_ft1, ft1))
+        self.remove(real_ft1)
+        self.add(ft1)
+        self.wait(1)
+
+        # fft with sin wave approximation
+        self.play(Transform(wave1, wave2), Transform(ft1, ft2))
+        self.remove(wave1, ft1)
+        self.add(wave2, ft2)
+        self.wait(0.5)
+        wave2_approx_amount = 9
+        self.wait(0.5)
 
         # End Pause
         self.wait(2)
