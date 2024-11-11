@@ -175,7 +175,15 @@ class FourierTransforms(Scene):
         self.play(Unwrite(lines1), Unwrite(lines2))
 
         # fft approximation versus real ft
-        
+        approx_arrow_pointing_to = frequency_domain.c2p(1.5, 0.25)
+        approx_arrow = Arrow(start=approx_arrow_pointing_to + np.array([1.5, 0.5, 0]), end=approx_arrow_pointing_to)
+        fft = MathTex(r"\text{``FFT''}").scale(0.6).shift(4 * DOWN)
+        real = MathTex(r"\text{Real Fourier Transform}").scale(0.6).move_to(fft)
+        self.play(Write(approx_arrow), Write(fft))
+        self.wait(2)
+        self.play(Transform(fft, real))
+        self.remove(fft)
+        self.add(real)
 
         # End Pause
         self.wait(2)
