@@ -44,8 +44,7 @@ class FourierTransforms(Scene):
         wave1_eq[9][:].set_color(BLUE)
         wave1_eq[10][:].set_color(BLUE)
 
-        wave2_approx_amount = 8
-        wave2 = always_redraw(lambda: time_domain.plot(lib.square_wave_fourier(wave2_approx_amount), color=BLUE))
+        square_wave_approximations = [time_domain.plot(lib.square_wave_fourier(i), color=BLUE) for i in range(3, 10)]
 
         components_tracker = ValueTracker(0)
         wave1_comp1 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp1(x) + components_tracker.get_value(), color=RED))
@@ -63,7 +62,7 @@ class FourierTransforms(Scene):
         # initial_ft_draw_dot = always_redraw(lambda: Dot(point=frequency_domain.c2p(initial_ft_draw_tracker.get_value(), initial_ft_draw.underlying_function(initial_ft_draw_tracker.get_value())), color=PURPLE))
         ft1 = frequency_domain.plot(ft1_func, color=PURPLE)
         real_ft1 = frequency_domain.plot(real_ft1_func, color=PURPLE, x_range=frequency_domain.x_range[:2] + [0.0001], use_smoothing=False)
-        ft2 = always_redraw(lambda: frequency_domain.plot(lib.fft_func(wave2.underlying_function, freq_max_x), color=BLUE))
+        square_wave_approximation_fts = [frequency_domain.plot(lib.fft_func(w.underlying_function, freq_max_x), color=BLUE) for w in square_wave_approximations]
 
         # Animation
 
@@ -209,12 +208,13 @@ class FourierTransforms(Scene):
         self.wait(1)
 
         # fft with sin wave approximation
-        self.play(Transform(wave1, wave2), Transform(ft1, ft2))
+        self.play(Transform(wave1, square_wave_approximations[0]), Transform(ft1, square_wave_approximation_fts[0]))
         self.remove(wave1, ft1)
-        self.add(wave2, ft2)
+        self.add(square_wave_approximations[0], square_wave_approximation_fts[0])
         self.wait(0.5)
-        wave2_approx_amount = 9
-        self.wait(0.5)
+        for i in range(4):
+            self.play(ReplacementTransform(square_wave_approximations[i], square_wave_approximations[i+1]), ReplacementTransform(square_wave_approximation_fts[i], square_wave_approximation_fts[i+1]))
+            self.wait(0.5)
 
         # End Pause
         self.wait(2)
