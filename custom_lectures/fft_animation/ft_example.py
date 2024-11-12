@@ -44,7 +44,10 @@ class FourierTransforms(Scene):
         wave1_eq[9][:].set_color(BLUE)
         wave1_eq[10][:].set_color(BLUE)
 
-        square_wave_approximations = [time_domain.plot(lib.square_wave_fourier(i), color=BLUE) for i in range(3, 10)]
+        wave2_eq = MathTex(r"f(x)", r"=", r"\frac{4}{\pi}\sin(\pi x)", r"+", r"\frac{4}{3\pi}\sin(3\cdot\pi x)", r"+\dots+", r"\frac{4}{n\pi}\sin(n\cdot\pi x)", color=BLUE).scale(0.6).move_to(wave1_eq, aligned_edge=LEFT)
+        max_cached_approximations = 16
+        square_wave_approximation_n_val_texes = [MathTex(r"n=", f"{2 * i + 1}").scale(0.6).move_to(wave2_eq).shift(5.5 * RIGHT) for i in range(3, max_cached_approximations)]
+        square_wave_approximations = [time_domain.plot(lib.square_wave_fourier(i), color=BLUE) for i in range(3, max_cached_approximations)]
 
         components_tracker = ValueTracker(0)
         wave1_comp1 = always_redraw(lambda: time_domain.plot(lambda x: wave1_func_comp1(x) + components_tracker.get_value(), color=RED))
@@ -53,6 +56,7 @@ class FourierTransforms(Scene):
         frequency_domain = Axes(x_range=[time_min_x, time_max_x, 0.5], y_range=[0, 0.72, 0.5], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(freq_min_x, freq_max_x, 1)}).scale(0.4).shift(-2 * UP)
         frequency_domain_title = MathTex(r"\text{``Frequency Domain''}", color=YELLOW).shift(0.5 * DOWN)
         frequency_domain_labels = frequency_domain.get_axis_labels(x_label=MathTex(r"\text{Frequency}").scale(0.5), y_label=MathTex(r"\text{Contributing Factor}").scale(0.5))
+        frequency_domain_rescaled = Axes(x_range=[time_min_x, time_max_x * 2, 1], y_range=[0, 1.3, 1], x_length=25, axis_config={"include_numbers": True}, x_axis_config={"numbers_with_elongated_ticks": range(freq_min_x, freq_max_x, 2)}).scale(0.4).shift(-2 * UP)
 
         ft1_func = lib.fft_func(wave1_func, freq_max_x)
         real_ft1_func = lib.analytical_fft([0.333, 0.667], [1, 1.33])
@@ -62,7 +66,7 @@ class FourierTransforms(Scene):
         # initial_ft_draw_dot = always_redraw(lambda: Dot(point=frequency_domain.c2p(initial_ft_draw_tracker.get_value(), initial_ft_draw.underlying_function(initial_ft_draw_tracker.get_value())), color=PURPLE))
         ft1 = frequency_domain.plot(ft1_func, color=PURPLE)
         real_ft1 = frequency_domain.plot(real_ft1_func, color=PURPLE, x_range=frequency_domain.x_range[:2] + [0.0001], use_smoothing=False)
-        square_wave_approximation_fts = [frequency_domain.plot(lib.fft_func(w.underlying_function, freq_max_x), color=BLUE) for w in square_wave_approximations]
+        square_wave_approximation_fts = [frequency_domain_rescaled.plot(lib.fft_func(w.underlying_function, freq_max_x), color=BLUE) for w in square_wave_approximations]
 
         # Animation
 
@@ -178,7 +182,7 @@ class FourierTransforms(Scene):
         approx_arrow_pointing_to = frequency_domain.c2p(1.5, 0.25)
         approx_arrow = Arrow(start=approx_arrow_pointing_to + np.array([1.5, 0.5, 0]), end=approx_arrow_pointing_to)
         fft = MathTex(r"\text{``FFT''}").scale(0.6).shift(2 * DOWN + 1 * LEFT)
-        real = MathTex(r"\text{Real Fourier Transform}", r"").scale(0.6).shift(2 * DOWN)
+        real = MathTex(r"\text{Real Fourier Transform}", r" ").scale(0.6).shift(2 * DOWN)
         real_asterix = MathTex(r"\text{Real Fourier Transform}", r"\text{*}").scale(0.6).shift(2 * DOWN)
         self.play(Write(approx_arrow), Write(fft))
         self.wait(4)
@@ -208,13 +212,20 @@ class FourierTransforms(Scene):
         self.wait(1)
 
         # fft with sin wave approximation
-        self.play(Transform(wave1, square_wave_approximations[0]), Transform(ft1, square_wave_approximation_fts[0]))
+        self.play(ReplacementTransform(frequency_domain, frequency_domain_rescaled), Transform(wave1, square_wave_approximations[0]), Transform(ft1, square_wave_approximation_fts[0]), TransformMatchingTex(wave1_eq, wave2_eq, transform_mismatches=True))
+        self.play(Write(square_wave_approximation_n_val_texes[0]))
         self.remove(wave1, ft1)
         self.add(square_wave_approximations[0], square_wave_approximation_fts[0])
+        self.wait(1)
+        self.play(Circumscribe(wave2_eq[2], color=YELLOW, shape=Rectangle))
+        self.play(Circumscribe(Rectangle(height=1.6, width=0.9).shift(2.7 * DOWN + 4.8 * LEFT), color=YELLOW, shape=Rectangle))
         self.wait(0.5)
-        for i in range(4):
-            self.play(ReplacementTransform(square_wave_approximations[i], square_wave_approximations[i+1]), ReplacementTransform(square_wave_approximation_fts[i], square_wave_approximation_fts[i+1]))
+        max_waves_shown = 11
+        for i in range(max_waves_shown):
+            self.play(ReplacementTransform(square_wave_approximations[i], square_wave_approximations[i+1]), ReplacementTransform(square_wave_approximation_fts[i], square_wave_approximation_fts[i+1]), ReplacementTransform(square_wave_approximation_n_val_texes[i], square_wave_approximation_n_val_texes[i+1]))
             self.wait(0.5)
+        self.wait(2)
+        self.play(Unwrite(frequency_domain_rescaled), Unwrite(time_domain), Unwrite(time_domain_title), Unwrite(frequency_domain_title), Unwrite(time_domain_labels), Unwrite(frequency_domain_labels), Unwrite(square_wave_approximation_n_val_texes[max_waves_shown]), Unwrite(wave2_eq), FadeOut(square_wave_approximations[max_waves_shown]), FadeOut(square_wave_approximation_fts[max_waves_shown]))
 
         # End Pause
         self.wait(2)
