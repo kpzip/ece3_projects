@@ -8,7 +8,8 @@ def render():
     if '-4k' in sys.argv:
         quality = 'k'
     # os.system(f"manim -pq{quality} intro.py SineWaves")
-    os.system(f"manim -pq{quality} ft_example.py FourierTransforms")
+    # os.system(f"manim -pq{quality} ft_example.py FourierTransforms")
+    os.system(f"manim -pq{quality} ft_explanation.py FourierTransformInternals")
 
 if __name__ == '__main__':
     render()
