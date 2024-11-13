@@ -113,12 +113,22 @@ class FourierTransformInternals(Scene):
         self.wait(1)
         self.play(Unwrite(freq_text))
         self.play(Unwrite(brace1), Unwrite(brace2))
-        self.wait(0.5)
-        self.play(xi_tracker.animate.set_value(1), run_time=2)
         self.wait(2)
 
         # integral
         self.play(Circumscribe(transform_tex[4]), Circumscribe(transform_tex[9]))
+        area_polygon = Polygon(sin_wave_radial_graph_adjustable.get_points_defining_boundary(), color=RED)
+        self.wait(0.5)
+        self.play(FadeIn(area_polygon))
+        self.wait(0.5)
+        self.play(FadeOut(area_polygon))
+        self.wait(2)
+        integral_explanation_tex_0 = MathTex(r"\text{For a sin wave,}").scale(0.7).shift(0.3 * UP)
+        integral_explanation_tex_1 = MathTex(r"\text{If }", r"\xi\neq f_{n}", r"\text{, } \hat{f}(\xi)=0").scale(0.7).shift(0.3 * DOWN)
+        integral_explanation_tex_2 = MathTex(r"\text{If }", r"\xi=f_{n}", r"\text{, } \hat{f}(\xi)=\infty").scale(0.7).shift(0.9 * DOWN)
+        self.play(Write(integral_explanation_tex_0))
+        self.play(Write(integral_explanation_tex_1))
+        self.play(Write(integral_explanation_tex_2))
 
         # 2 frequencies
 
