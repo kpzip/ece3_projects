@@ -138,7 +138,7 @@ class FourierTransformInternals(Scene):
         self.wait(0.2)
         self.play(xi_tracker.animate.set_value(0.5), run_time=2)
         self.wait(0.2)
-        self.play(xi_tracker.animate.set_value(1), run_time=1)
+        self.play(xi_tracker.animate.set_value(2), run_time=3)
 
         # 2 frequencies
 
