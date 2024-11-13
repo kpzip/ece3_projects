@@ -29,7 +29,8 @@ class FourierTransformInternals(Scene):
         xi_slider = NumberLine(x_range=[0, 5, 1], include_numbers=True, numbers_with_elongated_ticks=[0, 5]).scale(0.7).shift(2.4 * DOWN)
         xi_dot = always_redraw(lambda: Dot(point=xi_slider.n2p(xi_tracker.get_value())))
 
-        theta_range = np.array([0, (16 * PI)])
+        # set to 16 PI for final render, since this seems to cause a lot of lag when rendering
+        theta_range = np.array([0, (1 * PI)])
         sin_wave_radial_graph = complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker_init * 2 * PI)), theta_range=theta_range, color=RED)
         sin_wave_radial_graph_adjustable = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=RED))
 
@@ -91,7 +92,7 @@ class FourierTransformInternals(Scene):
         self.wait(1)
 
         # xi
-        self.play(Circumscribe(transform_tex[8]))
+        self.play(Circumscribe(transform_tex[8]), Circumscribe(transform_tex[1]))
         self.remove(sin_wave_radial_graph)
         self.add(sin_wave_radial_graph_adjustable)
         self.play(Write(xi_tex))
@@ -103,9 +104,9 @@ class FourierTransformInternals(Scene):
         self.play(xi_tracker.animate.set_value(0.5), run_time=6)
         self.wait(0.5)
         self.play(xi_tracker.animate.set_value(2), run_time=2)
-        brace1 = BraceBetweenPoints(axes.c2p(1, 1), axes.c2p(1.5, 1), direction=UP)
-        brace2 = BraceBetweenPoints(axes.c2p(1.5, 1), axes.c2p(2, 1), direction=UP)
-        freq_text = MathTex(r"\text{2 Hz}").scale(0.6).move_to(axes.c2p(1.5, 1.4))
+        brace1 = BraceBetweenPoints(axes.c2p(1, 0.9), axes.c2p(1.5, 0.9), direction=UP)
+        brace2 = BraceBetweenPoints(axes.c2p(1.5, 0.9), axes.c2p(2, 0.9), direction=UP)
+        freq_text = MathTex(r"\text{2 Hz}").scale(0.6).move_to(axes.c2p(1.5, 1.3))
         self.play(Write(brace1))
         self.play(Write(brace2))
         self.play(Write(freq_text))
@@ -114,7 +115,12 @@ class FourierTransformInternals(Scene):
         self.play(Unwrite(brace1), Unwrite(brace2))
         self.wait(0.5)
         self.play(xi_tracker.animate.set_value(1), run_time=2)
+        self.wait(2)
 
+        # integral
+        self.play(Circumscribe(transform_tex[4]), Circumscribe(transform_tex[9]))
+
+        # 2 frequencies
 
         # Wait at the end
         self.wait(2)
