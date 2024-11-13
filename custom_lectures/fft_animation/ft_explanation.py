@@ -2,6 +2,8 @@ from manim import *
 import numpy as np
 import lib
 
+first_wave_color = PURPLE
+
 class FourierTransformInternals(Scene):
 
     def construct(self):
@@ -19,9 +21,9 @@ class FourierTransformInternals(Scene):
 
         sin_wave_func = lambda x: 0.5 * np.cos(x * 2 * np.pi * 2) + 0.5
         sin_wave_draw_tracker = ValueTracker(0)
-        sin_wave_cartesian_graph_drawing = always_redraw(lambda: axes.plot(sin_wave_func, x_range=[0, sin_wave_draw_tracker.get_value()], color=RED))
+        sin_wave_cartesian_graph_drawing = always_redraw(lambda: axes.plot(sin_wave_func, x_range=[0, sin_wave_draw_tracker.get_value()], color=first_wave_color))
         sin_wave_cartesian_arrow = always_redraw(lambda: Arrow(start=axes.c2p(sin_wave_draw_tracker.get_value(), 0), end=axes.c2p(sin_wave_draw_tracker.get_value(), sin_wave_func(sin_wave_draw_tracker.get_value())), buff=0, color=YELLOW))
-        sin_wave_cartesian_graph = axes.plot(sin_wave_func, color=RED)
+        sin_wave_cartesian_graph = axes.plot(sin_wave_func, color=first_wave_color)
 
         xi_tracker_init = 1.1
         xi_tracker = ValueTracker(xi_tracker_init)
@@ -31,8 +33,8 @@ class FourierTransformInternals(Scene):
 
         # set to 16 PI for final render, since this seems to cause a lot of lag when rendering
         theta_range = np.array([0, (2 * PI)])
-        sin_wave_radial_graph = complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker_init * 2 * PI)), theta_range=theta_range * xi_tracker_init, color=RED)
-        sin_wave_radial_graph_adjustable = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=RED))
+        sin_wave_radial_graph = complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker_init * 2 * PI)), theta_range=theta_range * xi_tracker_init, color=first_wave_color)
+        sin_wave_radial_graph_adjustable = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=first_wave_color))
 
         arrow_tracker = ValueTracker(0)
 
@@ -120,7 +122,7 @@ class FourierTransformInternals(Scene):
 
         # integral
         self.play(Circumscribe(transform_tex[4]), Circumscribe(transform_tex[9]))
-        area_polygon = Polygon(*sin_wave_radial_graph_adjustable.points, color=RED, fill_color=RED, fill_opacity=0.7)
+        area_polygon = Polygon(*sin_wave_radial_graph_adjustable.points, color=first_wave_color, fill_color=first_wave_color, fill_opacity=0.7)
         self.wait(0.5)
         self.play(FadeIn(area_polygon))
         self.wait(0.5)
