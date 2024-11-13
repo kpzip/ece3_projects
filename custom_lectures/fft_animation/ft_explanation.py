@@ -117,7 +117,7 @@ class FourierTransformInternals(Scene):
 
         # integral
         self.play(Circumscribe(transform_tex[4]), Circumscribe(transform_tex[9]))
-        area_polygon = Polygon(sin_wave_radial_graph_adjustable.get_points_defining_boundary(), color=RED)
+        area_polygon = Polygon(*sin_wave_radial_graph_adjustable.points, color=RED, fill_color=RED, fill_opacity=0.7)
         self.wait(0.5)
         self.play(FadeIn(area_polygon))
         self.wait(0.5)
