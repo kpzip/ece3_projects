@@ -148,8 +148,8 @@ class FourierTransformInternals(Scene):
 
         # 2 frequencies
         wave_2_func = lambda x: 0.25 * np.cos(x * 2 * np.pi * 2) + 0.25 * np.cos(x * 2 * np.pi * 5) + 0.5
-        wave_2 = axes.plot(wave_2_func, color=DARK_BROWN)
-        wave_2_radial = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: wave_2_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=RED))
+        wave_2 = axes.plot(wave_2_func, color=BLUE)
+        wave_2_radial = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: wave_2_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=BLUE))
         self.play(ReplacementTransform(sin_wave_cartesian_graph, wave_2), ReplacementTransform(sin_wave_radial_graph_adjustable, wave_2_radial))
         self.play(xi_tracker.animate.set_value(2), run_time=2)
         self.wait(0.2)
