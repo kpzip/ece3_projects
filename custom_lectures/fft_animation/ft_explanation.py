@@ -100,7 +100,7 @@ class FourierTransformInternals(Scene):
         self.play(xi_tracker.animate.set_value(2), run_time=4)
         self.wait(0.5)
         self.play(xi_tracker.animate.set_value(3), run_time=3)
-        test_freq_tex = MathTex(r"\xi \text{ acts as our ``test frequency''}").scale(0.6)
+        test_freq_tex = MathTex(r"\xi \text{ Acts as our ``test frequency''}").scale(0.6)
         self.play(Write(test_freq_tex))
         self.wait(0.5)
         self.play(xi_tracker.animate.set_value(0.5), run_time=6)
