@@ -133,6 +133,12 @@ class FourierTransformInternals(Scene):
         self.play(Write(integral_explanation_tex_0))
         self.play(Write(integral_explanation_tex_1))
         self.play(Write(integral_explanation_tex_2))
+        self.wait(1)
+        self.play(xi_tracker.animate.set_value(3), run_time=4)
+        self.wait(0.2)
+        self.play(xi_tracker.animate.set_value(0.5), run_time=2)
+        self.wait(0.2)
+        self.play(xi_tracker.animate.set_value(1), run_time=1)
 
         # 2 frequencies
 
