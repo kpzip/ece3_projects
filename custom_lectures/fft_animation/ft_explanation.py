@@ -23,14 +23,14 @@ class FourierTransformInternals(Scene):
         sin_wave_cartesian_arrow = always_redraw(lambda: Arrow(start=axes.c2p(sin_wave_draw_tracker.get_value(), 0), end=axes.c2p(sin_wave_draw_tracker.get_value(), sin_wave_func(sin_wave_draw_tracker.get_value())), buff=0, color=YELLOW))
         sin_wave_cartesian_graph = axes.plot(sin_wave_func, color=RED)
 
-        xi_tracker_init = 1
+        xi_tracker_init = 1.1
         xi_tracker = ValueTracker(xi_tracker_init)
         xi_tex = always_redraw(lambda: MathTex(r"\xi=", f"{xi_tracker.get_value():.2f}").scale(0.6).shift(2 * DOWN))
         xi_slider = NumberLine(x_range=[0, 5, 1], include_numbers=True, numbers_with_elongated_ticks=[0, 5]).scale(0.7).shift(2.4 * DOWN)
         xi_dot = always_redraw(lambda: Dot(point=xi_slider.n2p(xi_tracker.get_value())))
 
         # set to 16 PI for final render, since this seems to cause a lot of lag when rendering
-        theta_range = np.array([0, (1 * PI)])
+        theta_range = np.array([0, (2 * PI)])
         sin_wave_radial_graph = complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker_init * 2 * PI)), theta_range=theta_range, color=RED)
         sin_wave_radial_graph_adjustable = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=RED))
 
