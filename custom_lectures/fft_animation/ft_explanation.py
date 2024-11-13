@@ -140,14 +140,14 @@ class FourierTransformInternals(Scene):
         self.wait(0.2)
         self.play(xi_tracker.animate.set_value(2), run_time=3)
         self.wait(1)
-        more_examples_tex = MathTex(r"\text{More Examples!}")
+        more_examples_tex = MathTex(r"\text{More Examples!}").scale(0.8)
         self.play(Unwrite(integral_explanation_tex_0), Unwrite(integral_explanation_tex_1), Unwrite(integral_explanation_tex_2))
         self.play(Write(more_examples_tex))
         self.play(xi_tracker.animate.set_value(xi_tracker_init), run_time=2)
         self.wait(0.5)
 
         # 2 frequencies
-        wave_2_func = 0.25 * np.cos(x * 2 * np.pi * 2) + 0.25 * np.cos(x * 2 * np.pi * 5) + 0.5
+        wave_2_func = lambda x: 0.25 * np.cos(x * 2 * np.pi * 2) + 0.25 * np.cos(x * 2 * np.pi * 5) + 0.5
         wave_2 = axes.plot(wave_2_func, color=DARK_BROWN)
         wave_2_radial = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: wave_2_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=RED))
         self.play(ReplacementTransform(sin_wave_cartesian_graph, wave_2), ReplacementTransform(sin_wave_radial_graph_adjustable, wave_2_radial))
