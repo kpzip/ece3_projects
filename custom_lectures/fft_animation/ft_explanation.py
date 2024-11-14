@@ -2,7 +2,7 @@ from manim import *
 import numpy as np
 import lib
 
-first_wave_color = PURPLE
+first_wave_color = YELLOW
 
 class FourierTransformInternals(Scene):
 
@@ -89,7 +89,7 @@ class FourierTransformInternals(Scene):
         self.add(sin_wave_radial_graph)
         self.remove(arrow)
         self.add(sin_following_arrow)
-        self.play(arrow_tracker.animate.set_value(1), run_time=rev_time * 1.5, rate_func=linear)
+        self.play(arrow_tracker.animate.set_value(xi_tracker_init), run_time=rev_time * 1.5, rate_func=linear)
         self.play(FadeOut(sin_following_arrow))
         self.wait(1)
 
@@ -153,8 +153,9 @@ class FourierTransformInternals(Scene):
         wave_2 = axes.plot(wave_2_func, color=BLUE)
         wave_2_radial = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: wave_2_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=BLUE))
         self.play(ReplacementTransform(sin_wave_cartesian_graph, wave_2), ReplacementTransform(sin_wave_radial_graph_adjustable, wave_2_radial))
+        self.wait(0.5)
         self.play(xi_tracker.animate.set_value(2), run_time=2)
-        self.wait(0.2)
+        self.wait(1.5)
         self.play(xi_tracker.animate.set_value(5), run_time=2)
 
         # Wait at the end
