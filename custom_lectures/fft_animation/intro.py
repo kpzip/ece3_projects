@@ -85,12 +85,14 @@ class SineWaves(Scene):
         self.wait(0.5)
         # self.add(index_labels(sin_func_text_with_f[0]))
         self.play(Write(sin_func_text))
+        self.wait(2)
         self.play(sin_func_text.animate.scale(0.5).shift(4 * RIGHT + 1 * DOWN))
         self.play(Write(axes))
         self.wait(0.5)
         self.add(sin_wave, sin_dot)
         self.play(vt.animate.set_value(max_x), run_time=2)
         self.play(FadeOut(sin_dot))
+        self.wait(7)
 
         # introduce 'f' variable
         self.play(TransformMatchingTex(Group(sin_func_text, f_fadein_group), sin_func_text_with_f, run_time=1))
@@ -104,7 +106,7 @@ class SineWaves(Scene):
         self.play(f.animate.set_value(3), run_time=4)
         self.wait(0.5)
         self.play(f.animate.set_value(1), run_time=2)
-        self.wait(0.5)
+        self.wait(8)
         self.play(Write(lambda_line))
         self.play(Write(lambda_symbol))
 
@@ -129,11 +131,13 @@ class SineWaves(Scene):
         self.play(f.animate.set_value(0.5), run_time=1)
         self.wait(0.5)
         self.play(f.animate.set_value(1), run_time=1)
+        self.wait(10)
 
         # ??? wavelength
         self.play(Unwrite(f_dot, run_time=1), Unwrite(f_line, run_time=1), TransformMatchingTex(Group(f_value, question_value_fadein_group), f_value_unknown, run_time=1))
         self.wait(0.35)
         self.play(f.animate.set_value(0.6666), run_time=1.25)
+        self.wait(2)
 
         # freq calculation from eyeball wavelength
         freq_eyeball1 = MathTex(r"f=\frac{1}{\lambda}").center().scale(0.5).shift(2 * DOWN)
@@ -153,9 +157,9 @@ class SineWaves(Scene):
         self.wait(0.1)
         self.play(Transform(sin_wave, square_approx, replace_mobject_with_target_in_scene=True))
         self.play(TransformMatchingTex(f_value_unknown, f_alpha_value_unknown, transform_mismatches=True))
-        self.wait(0.5)
+        self.wait(10)
         self.play([Wiggle(c, scale_value=1.5) for c in multiple_sin_funcs_constants])
-        self.wait(0.5)
+        self.wait(10)
 
         # is it possible?
         is_it_possible = MathTex(r"\text{Is it possible to find }", r"f_{i}", r"\text{ and }", r"\alpha_{i}", r"\text{ from the graph?}").scale(0.75).center().shift(3 * UP)
@@ -187,13 +191,14 @@ class SineWaves(Scene):
 
         # fourier transformation debut
         yes = MathTex(r"\text{Yes!}").scale(0.75).shift(3 * UP)
+        self.wait(10)
         fourier_transform = MathTex(r"\hat{g}(\xi)=\int_{-\infty}^{\infty}g(x)e^{-2\pi ix\xi}dx").scale(0.75).move_to(yes).shift(1.25 * DOWN)
         self.play(Write(yes))
         self.play(Write(fourier_transform))
 
         # self.add(index_labels(fourier_transform[0]))
         # self.play(Write(fourier_transform))
-        self.wait(4)
+        self.wait(15)
 
         # disappear
         self.play(Unwrite(fourier_transform, run_time=0.75), Unwrite(yes, run_time=0.75), Unwrite(axes, run_time=0.75), Unwrite(multiple_sin_funcs, run_time=0.75), Unwrite(f_alpha_value_unknown, run_time=0.75), FadeOut(square_approx, run_time=0.25))
