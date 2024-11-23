@@ -110,7 +110,7 @@ class Applications(Scene):
         self.play(Write(text))
         file_group = VGroup(file_logo, peel_corner, banner, text)
         self.play(file_group.animate.shift(3 * RIGHT))
-        self.wait(5)
+        self.wait(8)
         self.play(Unwrite(scope), FadeOut(file_group), FadeOut(fft_plot), FadeOut(sine_wave))
         thanks = Tex("Thanks for watching!")
         self.play(Write(thanks))
