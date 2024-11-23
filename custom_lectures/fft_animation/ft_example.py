@@ -84,17 +84,17 @@ class FourierTransforms(Scene):
         self.play(Wiggle(time_domain_labels[1]))
         self.wait(0.6)
         self.play(Wiggle(time_domain_labels[0]))
-        self.wait(1)
+        self.wait(5)
 
         # Frequency Space
         self.play(Write(frequency_domain))
         self.wait(0.5)
         self.play(Write(frequency_domain_title), Write(frequency_domain_labels[1]), Write(frequency_domain_labels[0]))
-        self.wait(1)
+        self.wait(5)
         self.play(Wiggle(frequency_domain_labels[1]))
         self.wait(0.6)
         self.play(Wiggle(frequency_domain_labels[0]))
-        self.wait(1)
+        self.wait(4)
 
         # Wave1 and components
         self.add(initial_wave_draw, initial_wave_draw_dot)
@@ -102,7 +102,7 @@ class FourierTransforms(Scene):
         self.play(FadeOut(initial_wave_draw_dot))
         self.remove(initial_wave_draw)
         self.add(wave1)
-        self.wait(1.5)
+        self.wait(3)
         # Components
         wave1_copy1 = wave1.copy()
         wave1_copy2 = wave1.copy()
@@ -118,7 +118,7 @@ class FourierTransforms(Scene):
         self.play(Transform(wave1_comp1, wave1, replace_mobject_with_target_in_scene=True), Transform(wave1_comp2, wave1, replace_mobject_with_target_in_scene=True))
         self.remove(wave1_comp1, wave1_comp2)
         self.add(wave1)
-        self.wait(0.5)
+        self.wait(10)
 
         # constructive interference
         c_arrow_1_pointing_to = time_domain.c2p(5.35, 0.80)
@@ -129,7 +129,7 @@ class FourierTransforms(Scene):
         constructive_text = MathTex(r"\text{``constructive interference''}").scale(0.4).shift(3.5 * UP + 4.5 * RIGHT)
         self.play(Write(constructive_arrows))
         self.play(Write(constructive_text))
-        self.wait(1.5)
+        self.wait(3)
 
         # destructive interference
         d_arrow_1_pointing_to = time_domain.c2p(4.5, 0.25)
@@ -140,7 +140,7 @@ class FourierTransforms(Scene):
         destructive_text = MathTex(r"\text{``destructive interference''}").scale(0.4).shift(2.5 * RIGHT + 0.7 * UP)
         self.play(Write(destructive_arrows))
         self.play(Write(destructive_text))
-        self.wait(1.5)
+        self.wait(3)
         self.play(Unwrite(constructive_arrows), Unwrite(constructive_text))
         self.play(Unwrite(destructive_arrows), Unwrite(destructive_text))
 
@@ -149,7 +149,7 @@ class FourierTransforms(Scene):
         self.play(Transform(wave1_copy4, ft_eq), run_time=2)
         self.remove(wave1_copy4)
         self.add(ft_eq)
-        self.wait(1)
+        self.wait(0.5)
         self.play(Transform(ft_eq, ft1), run_time=2)
         self.remove(ft_eq)
         # self.add(initial_ft_draw, initial_ft_draw_dot)
@@ -157,14 +157,14 @@ class FourierTransforms(Scene):
         # self.play(FadeOut(initial_ft_draw_dot))
         # self.remove(initial_ft_draw)
         self.add(ft1)
-        self.wait(1.5)
+        self.wait(4)
 
         # ft1 explanation
         lines1 = frequency_domain.get_lines_to_point(frequency_domain.c2p(1.0, 0.35))
         lines2 = frequency_domain.get_lines_to_point(frequency_domain.c2p(1.29, 0.51))
-        self.wait(0.5)
+        self.wait(1.5)
         self.play(Write(lines1))
-        self.wait(0.5)
+        self.wait(1.5)
         self.play(Write(lines2))
         self.wait(2)
         wave1_copy4 = wave1.copy()
@@ -172,10 +172,13 @@ class FourierTransforms(Scene):
         self.remove(wave1_copy4)
         self.add(wave1_eq)
         self.play(Wiggle(wave1_eq[4], scale_value=2.5), Wiggle(lines1[0], scale_value=1.5))
+        self.wait(1)
         self.play(Wiggle(wave1_eq[2], scale_value=1.5), Wiggle(lines1[1], scale_value=1.5))
+        self.wait(1)
         self.play(Wiggle(wave1_eq[9], scale_value=1.5), Wiggle(lines2[0], scale_value=1.5))
+        self.wait(1)
         self.play(Wiggle(wave1_eq[7], scale_value=1.5), Wiggle(lines2[1], scale_value=1.5))
-        self.wait(2)
+        self.wait(4)
         self.play(Unwrite(lines1), Unwrite(lines2))
 
         # fft approximation versus real ft
@@ -204,7 +207,7 @@ class FourierTransforms(Scene):
         self.add(real_asterix)
         asterix_text = MathTex(r"\text{*in reality the the spikes are delta functions and their integrals are the amplitudes.}").scale(0.4).shift(3.7 * DOWN)
         self.play(Write(asterix_text), run_time=1.5)
-        self.wait(1.5)
+        self.wait(10)
         self.play(Unwrite(rft_point1), Unwrite(rft_point2), Unwrite(rft_point1_tex), Unwrite(rft_point2_tex), Unwrite(real_asterix), Unwrite(approx_arrow), Unwrite(asterix_text))
         self.play(Transform(real_ft1, ft1))
         self.remove(real_ft1)
@@ -224,7 +227,7 @@ class FourierTransforms(Scene):
         for i in range(max_waves_shown):
             self.play(ReplacementTransform(square_wave_approximations[i], square_wave_approximations[i+1]), ReplacementTransform(square_wave_approximation_fts[i], square_wave_approximation_fts[i+1]), ReplacementTransform(square_wave_approximation_n_val_texes[i], square_wave_approximation_n_val_texes[i+1]))
             self.wait(0.5)
-        self.wait(2)
+        self.wait(10)
         self.play(Unwrite(frequency_domain_rescaled), Unwrite(time_domain), Unwrite(time_domain_title), Unwrite(frequency_domain_title), Unwrite(time_domain_labels), Unwrite(frequency_domain_labels), Unwrite(square_wave_approximation_n_val_texes[max_waves_shown]), Unwrite(wave2_eq), FadeOut(square_wave_approximations[max_waves_shown]), FadeOut(square_wave_approximation_fts[max_waves_shown]))
 
         # End Pause
