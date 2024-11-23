@@ -32,7 +32,7 @@ class FourierTransformInternals(Scene):
         xi_dot = always_redraw(lambda: Dot(point=xi_slider.n2p(xi_tracker.get_value())))
 
         # set to 16 PI for final render, since this seems to cause a lot of lag when rendering
-        theta_range = np.array([0, (2 * PI)])
+        theta_range = np.array([0, (16 * PI)])
         sin_wave_radial_graph = complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker_init * 2 * PI)), theta_range=theta_range * xi_tracker_init, color=first_wave_color)
         sin_wave_radial_graph_adjustable = always_redraw(lambda: complex_plane.plot_polar_graph(lambda x: sin_wave_func(x / (xi_tracker.get_value() * 2 * PI)), theta_range=theta_range * xi_tracker.get_value(), color=first_wave_color))
 
@@ -167,6 +167,8 @@ class FourierTransformInternals(Scene):
         self.play(xi_tracker.animate.set_value(2), run_time=2)
         self.wait(1.5)
         self.play(xi_tracker.animate.set_value(5), run_time=2)
+        self.wait(1.5)
+        self.play(xi_tracker.animate.set_value(2), run_time=2)
 
         # Wait at the end
-        self.wait(2)
+        self.wait(10)
