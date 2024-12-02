@@ -1,0 +1,5 @@
+file 'media\videos\intro_intro\2160p60\IntroIntro.mp4' 
+file 'media\videos\intro\2160p60\SineWaves.mp4' 
+file 'media\videos\ft_example\2160p60\FourierTransforms.mp4' 
+file 'media\videos\ft_explanation\2160p60\FourierTransformInternals.mp4' 
+file 'media\videos\ft_applications\2160p60\Applications.mp4' 
